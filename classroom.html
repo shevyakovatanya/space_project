@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Class</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="page--classroom">
+  <div class="top-nav">
+    <a href="index.html" class="link-back">← Go back</a>
+  </div>
+
+  <main class="classroom">
+    <section class="classroom__panel classroom__header">
+      <div>
+        <h1 id="classTitle">Class</h1>
+        <p class="classroom__hint">Teacher dashboard: results by planet and total score.</p>
+      </div>
+    </section>
+
+    <section class="classroom__panel">
+      <h2>Teachers</h2>
+      <ul id="teachersList" class="teachers-list"></ul>
+    </section>
+
+    <section class="classroom__panel">
+      <div class="students-head">
+        <h2>Students</h2>
+        <p class="classroom__hint">Tip: scroll horizontally on small screens.</p>
+      </div>
+
+      <div class="table-wrap">
+        <table id="studentsTable" class="results-table">
+          <thead>
+            <tr>
+              <th>login</th>
+              <th>sun</th>
+              <th>mercury</th>
+              <th>venus</th>
+              <th>earth</th>
+              <th>mars</th>
+              <th>jupiter</th>
+              <th>saturn</th>
+              <th>uranus</th>
+              <th>neptune</th>
+              <th>total</th>
+            </tr>
+          </thead>
+          <tbody id="studentsBody"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

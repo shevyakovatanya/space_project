@@ -1,12 +1,10 @@
 <?php
-// planet.php
-header('Content-Type: application/json; charset=utf-8'); // UTF-8
+header('Content-Type: application/json; charset=utf-8');
 error_reporting(0);
 
 try {
-    require 'db.php'; // Подключение PDO ($pdo)
+    require 'db.php';
 
-    // Получаем параметры
     $planet_param = $_GET['name'] ?? null;
     $id_param = $_GET['id'] ?? null;
 
@@ -20,7 +18,6 @@ try {
         $stmt = $pdo->prepare('SELECT id, name, description, image, background, questions FROM planets WHERE id = ? LIMIT 1');
         $stmt->execute([$id_param]);
     } else {
-        // Регистр не имеет значения
         $stmt = $pdo->prepare('SELECT id, name, description, image, background, questions FROM planets WHERE name = ? COLLATE utf8_general_ci LIMIT 1');
         $stmt->execute([$planet_param]);
     }
@@ -33,7 +30,6 @@ try {
         exit;
     }
 
-    // Перекодируем строки в UTF-8 на всякий случай
     $planet = array_map(function($v) {
         return is_string($v) ? mb_convert_encoding($v, 'UTF-8', 'auto') : $v;
     }, $planet);

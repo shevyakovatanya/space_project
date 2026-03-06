@@ -1,0 +1,126 @@
+button {
+  font-family: inherit;
+}
+
+.btn {
+  border: none;
+  border-radius: 8px;
+  background-color: var(--btn-primary);
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 12px 20px;
+  transition: background-color 0.3s, transform 0.15s;
+}
+
+.btn:hover {
+  background-color: var(--btn-primary-hover);
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+/* Quiz buttons */
+.check-btn {
+  background-color: #2d9cdb;
+  color: #fff;
+  border: none;
+  padding: clamp(10px, 2vw, 12px) clamp(20px, 4vw, 24px);
+  border-radius: 8px;
+  font-size: clamp(14px, 2vw, 16px);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.15s ease;
+}
+
+.check-btn:hover {
+  background-color: #1b7fb8;
+  transform: translateY(-2px);
+}
+
+.continue-btn {
+  background: #2563eb;
+  border: none;
+  color: #fff;
+  padding: clamp(6px, 1.5vw, 10px) clamp(12px, 2.5vw, 16px);
+  cursor: pointer;
+  border-radius: 6px;
+  margin-top: clamp(8px, 2vw, 10px);
+}
+
+.continue-btn:hover {
+  background: #1d4ed8;
+}
+
+/* Index utility buttons */
+.my-class-btn {
+  position: fixed;
+  top: 40px;
+  left: 50px;
+
+  padding: 12px 44px;
+  min-width: 200px;
+
+  background: rgba(34, 78, 140, 0.65);
+  color: #eaf1ff;
+  font-size: 14.5px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+
+  border: 1px solid rgba(80, 130, 200, 0.8);
+  border-radius: 10px;
+
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.my-class-btn:hover {
+  background: rgba(44, 98, 170, 0.78);
+  border-color: rgba(120, 175, 245, 0.95);
+}
+
+.my-class-btn:active {
+  background: rgba(28, 70, 130, 0.75);
+}
+
+.logout-btn {
+  position: fixed;
+  top: 10px;
+  right: 20px;
+
+  background: transparent;
+  border: none;
+  padding: 0;
+
+  color: #fff;
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.logout-btn:hover {
+  opacity: 0.85;
+}
+
+@media (max-width: 600px) {
+  .my-class-btn {
+    left: 12px;
+    top: 12px;
+    min-width: unset;
+    padding: 10px 16px;
+  }
+
+  .logout-btn {
+    top: 12px;
+    right: 12px;
+    font-size: 16px;
+  }
+}
+
+.check-btn:disabled,
+.continue-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}

@@ -1,0 +1,42 @@
+.page--planet {
+  background: #000 no-repeat center center fixed;
+  background-size: cover;
+  text-align: center;
+  overflow-x: hidden;
+}
+
+.content-box {
+  background: var(--panel-bg);
+  padding: clamp(15px, 3vw, 25px);
+  border-radius: 12px;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: inline-block;
+  text-align: center;
+  margin: clamp(15px, 4vw, 30px) auto;
+  max-width: clamp(280px, 45%, 520px);
+  border: 1px solid var(--panel-border);
+}
+
+.content-box img {
+  display: block;
+  margin: clamp(10px, 3vw, 20px) auto;
+  max-width: 100%;
+  height: auto;
+}
+
+.content-box p {
+  margin-top: 10px;
+  color: #fff;
+  text-align: left;
+}
+
+.planet-title {
+  margin-top: 12px;
+}
+
+/* Make the back link look consistent */
+.page--planet .link-back {
+  display: inline-block;
+  margin-bottom: 10px;
+}

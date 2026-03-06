@@ -1,0 +1,89 @@
+.quiz-overlay {
+  color: #333;
+  display: flex;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.quiz-modal {
+  position: relative;
+  background: #fff;
+  padding: clamp(15px, 3vw, 30px);
+  border-radius: 10px;
+  max-width: 500px;
+  width: clamp(280px, 90%, 500px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+.quiz-modal h2 {
+  margin-top: 0;
+  font-size: clamp(18px, 2.5vw, 24px);
+}
+
+.question {
+  text-align: left;
+  margin-bottom: clamp(10px, 2vw, 20px);
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  background: none;
+  border: none;
+  font-size: 36px;
+  color: #666;
+  cursor: pointer;
+  user-select: none;
+  transition: color 0.2s ease;
+}
+
+.close-btn:hover {
+  color: #000;
+}
+
+.options-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: flex-start;
+  margin-top: 12px;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.option input[type="radio"] {
+  accent-color: var(--btn-primary);
+  margin: 0;
+  width: 16px;
+  height: 16px;
+}
+
+.feedback {
+  margin-top: 12px;
+  font-weight: 700;
+}
+
+.feedback.correct {
+  color: #16a34a;
+}
+
+.feedback.wrong {
+  color: #dc2626;
+}
+
+.stars {
+  margin-top: 10px;
+  font-size: 24px;
+  color: #fff;
+}

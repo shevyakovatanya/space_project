@@ -1,0 +1,67 @@
+:root {
+  --font-main: "Comic Sans MS", Arial, sans-serif;
+  --font-ui: Arial, Helvetica, sans-serif;
+
+  --text-light: #ffffff;
+  --text-dark: #0c0f18;
+
+  --accent: #4dc3ff;
+
+  --panel-bg: rgba(255, 255, 255, 0.081);
+  --panel-border: rgba(255, 255, 255, 0.12);
+
+  --overlay: rgba(0, 0, 0, 0.5);
+
+  --btn-primary: #007bff;
+  --btn-primary-hover: #0056b3;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-main);
+  color: var(--text-light);
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+
+a {
+  color: inherit;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 3px solid rgba(77, 195, 255, 0.55);
+  outline-offset: 2px;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* Small helper for back links */
+.link-back {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.link-back:hover {
+  text-decoration: underline;
+}

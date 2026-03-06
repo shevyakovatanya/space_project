@@ -1,128 +1,214 @@
-document.addEventListener('DOMContentLoaded', async () => {
-  // Проверка авторизации при загрузке страницы
+
+function $(id) {
+  return document.getElementById(id);
+}
+
+function setHidden(el, hidden) {
+  if (!el) return;
+  el.classList.toggle('hidden', !!hidden);
+}
+
+function dispatch(name) {
+  document.dispatchEvent(new Event(name));
+}
+
+async function fetchMe() {
   try {
-    const res = await fetch('api/me.php');
+    const res = await fetch('api/me.php', { credentials: 'include' });
     const data = await res.json();
-
-    if (data.user) {
-      // Пользователь залогинен
-      document.getElementById('auth-modal').style.display = 'none';
-
-      // Показываем имя в углу
-      const userBox = document.getElementById('user-box');
-      if (userBox) userBox.textContent = `👨‍🚀 ${data.user.username}`;
-    }
-  } catch (e) {
-    console.error('Auth check error:', e);
+    return data.user || null;
+  } catch {
+    return null;
   }
-});
+}
 
-document.addEventListener('DOMContentLoaded', () => {
-  const modal = document.getElementById('auth-modal');
-  const registerSection = document.getElementById('register-section');
-  const loginSection = document.getElementById('login-section');
-  const showLogin = document.getElementById('show-login');
-  const showRegister = document.getElementById('show-register');
-  const authTitle = document.getElementById('auth-title');
-
-  // Переключение на логин
-  showLogin.onclick = e => {
-    e.preventDefault();
-    registerSection.style.display = 'none';
-    loginSection.style.display = 'block';
-    authTitle.textContent = "Login";
-  };
-
-  // Переключение на регистрацию
-  showRegister.onclick = e => {
-    e.preventDefault();
-    loginSection.style.display = 'none';
-    registerSection.style.display = 'block';
-    authTitle.textContent = "Register";
-  };
-
-  // Проверяем сессию
-  async function checkSession() {
-    const res = await fetch('api/me.php');
-    const data = await res.json();
-    if (!data.user) {
-      modal.style.display = 'flex';     // показываем окно
-    }
-  }
-  checkSession();
-
-  // Регистрация
-  document.getElementById('register-form').addEventListener('submit', async e => {
-    e.preventDefault();
-    const username = document.getElementById('register-username').value.trim();
-    const password = document.getElementById('register-password').value;
-    const role = document.getElementById('register-role').value;
-
-    const res = await fetch('api/register.php', {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({username, password, role})
-    });
-    const data = await res.json();
-
-    if (data.success) {
-      alert('Registered! Now login.');
-      showLogin.click();
+function renderUserBox(userBox, logoutBtn, user) {
+  if (userBox) {
+    if (!user) {
+      userBox.textContent = '';
+      setHidden(userBox, true);
     } else {
-      alert(data.error);
-    }
-  });
-
-  // Логин
-  document.getElementById('login-form').addEventListener('submit', async e => {
-    e.preventDefault();
-    const username = document.getElementById('login-username').value.trim();
-    const password = document.getElementById('login-password').value;
-    const role = document.getElementById('login-role').value;
-
-    const res = await fetch('api/login.php', {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({username, password, role})
-    });
-    const data = await res.json();
-
-    if (data.success) {
-      modal.style.display = 'none';
-  
-      // ОБНОВЛЯЕМ ОТОБРАЖЕНИЕ ЛОГИНА В УГЛУ
-      const userBox = document.getElementById('user-box');
-      if (userBox) userBox.textContent = `👨‍🚀 ${data.username}`;
-  
-        alert(`Welcome, ${data.username}!`);
+      const uClass = user.class != null ? user.class : '';
+      if (user.role === 'teacher') {
+        userBox.innerHTML = `<span class="teacher">📚 Teacher<br>${user.username}${uClass !== '' ? ` (class ${uClass})` : ''}</span>`;
       } else {
-      alert(data.error);
-    }
-  });
-});
-
-// --- LOGOUT ---
-document.addEventListener('DOMContentLoaded', () => {
-  const logoutBtn = document.getElementById('logout-btn');
-  if (!logoutBtn) return;
-
-  logoutBtn.addEventListener('click', async () => {
-    try {
-      const res = await fetch('api/logout.php', { method: 'POST' });
-      const data = await res.json();
-
-      if (data.success) {
-        // очищаем отображение пользователя
-        const userBox = document.getElementById('user-box');
-        if (userBox) userBox.textContent = '';
-
-        // показываем модальное окно авторизации
-        document.getElementById('auth-modal').style.display = 'block';
-
-        alert("Logged out successfully.");
+        userBox.textContent = `👨‍🚀 ${user.username}${uClass !== '' ? ` (class ${uClass})` : ''}`;
       }
-    } catch (err) {
-      console.error("Logout error:", err);
+      setHidden(userBox, false);
     }
-  });
-});
+  }
+
+  if (logoutBtn) {
+    setHidden(logoutBtn, !user);
+  }
+}
+
+export function initAuth() {
+  const authModal = $('auth-modal');
+  const loginSection = $('login-section');
+  const registerSection = $('register-section');
+
+  const userBox = $('user-box');
+  const logoutBtn = $('logout-btn');
+
+  if (!authModal) return;
+
+  const setAuthModalVisible = isVisible => {
+    setHidden(authModal, !isVisible);
+  };
+
+  const showLogin = () => {
+    setHidden(loginSection, false);
+    setHidden(registerSection, true);
+  };
+
+  const showRegister = () => {
+    setHidden(loginSection, true);
+    setHidden(registerSection, false);
+  };
+
+  const updateLocalClass = user => {
+    if (!user || user.class == null) localStorage.removeItem('class');
+    else localStorage.setItem('class', user.class);
+  };
+
+  const refreshSessionUI = async () => {
+    const user = await fetchMe();
+    window.__currentUser = user;
+
+    if (user) {
+      setAuthModalVisible(false);
+      renderUserBox(userBox, logoutBtn, user);
+      updateLocalClass(user);
+      dispatch('userLoggedIn');
+    } else {
+      renderUserBox(userBox, logoutBtn, null);
+      setAuthModalVisible(true);
+      showLogin();
+    }
+  };
+
+  const showRegisterLink = $('show-register-link');
+  const showLoginLink = $('show-login-link');
+  if (showRegisterLink) {
+    showRegisterLink.addEventListener('click', e => {
+      e.preventDefault();
+      showRegister();
+    });
+  }
+  if (showLoginLink) {
+    showLoginLink.addEventListener('click', e => {
+      e.preventDefault();
+      showLogin();
+    });
+  }
+
+  const loginForm = $('login-form');
+  if (loginForm) {
+    loginForm.addEventListener('submit', async e => {
+      e.preventDefault();
+
+      const username = $('login-username')?.value.trim();
+      const password = $('login-password')?.value;
+      const role = $('login-role')?.value;
+
+      if (!username || !password || !role) {
+        alert('Please заполните все поля.');
+        return;
+      }
+
+      try {
+        const res = await fetch('api/login.php', {
+          method: 'POST',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password, role })
+        });
+
+        const data = await res.json();
+        if (!data.success) {
+          alert(data.error || 'Login failed');
+          return;
+        }
+
+        const user = data.user || null;
+        window.__currentUser = user;
+        setAuthModalVisible(false);
+        renderUserBox(userBox, logoutBtn, user);
+        updateLocalClass(user);
+        dispatch('userLoggedIn');
+      } catch (err) {
+        console.error('Login error:', err);
+        alert('Login error. Check console.');
+      }
+    });
+  }
+
+  const registerForm = $('register-form');
+  if (registerForm) {
+    registerForm.addEventListener('submit', async e => {
+      e.preventDefault();
+
+      const username = $('register-username')?.value.trim();
+      const password = $('register-password')?.value;
+      const role = $('register-role')?.value;
+      const userClass = Number($('register-class')?.value);
+
+      if (!username || !password || !role || !Number.isFinite(userClass)) {
+        alert('Please заполните все поля.');
+        return;
+      }
+      if (userClass < 1 || userClass > 11) {
+        alert('Class must be between 1 and 11');
+        return;
+      }
+
+      try {
+        const res = await fetch('api/register.php', {
+          method: 'POST',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password, role, class: userClass })
+        });
+
+        const data = await res.json();
+        if (!data.success) {
+          alert(data.error || 'Registration failed');
+          return;
+        }
+
+        const user = data.user || null;
+        window.__currentUser = user;
+        setAuthModalVisible(false);
+        renderUserBox(userBox, logoutBtn, user);
+        updateLocalClass(user);
+        dispatch('userLoggedIn');
+      } catch (err) {
+        console.error('Register error:', err);
+        alert('Registration error. Check console.');
+      }
+    });
+  }
+
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', async () => {
+      try {
+        const res = await fetch('api/logout.php', { credentials: 'include' });
+        const data = await res.json();
+
+        if (data.success) {
+          localStorage.removeItem('class');
+          window.__currentUser = null;
+          renderUserBox(userBox, logoutBtn, null);
+          setAuthModalVisible(true);
+          showLogin();
+          dispatch('userLoggedOut');
+        }
+      } catch (err) {
+        console.error('Logout error:', err);
+      }
+    });
+  }
+
+  refreshSessionUI();
+}
